@@ -2,7 +2,11 @@
 
 > Built for the Cloudflare PM Build Challenge
 
-An MCP (Model Context Protocol) server that helps product managers aggregate and analyze customer feedback from multiple sources using AI-powered semantic search and summarization.
+An MCP server that helps PMs search and summarize customer feedback from support, Discord, and Twitter using AI-powered semantic search and LLM summarization.
+
+## Overview
+
+The Feedback MCP Server is built on Cloudflare Workers using the Cloudflare Agents SDK, which provides the `McpAgent` class for handling MCP protocol via Streamable HTTP with Durable Objects managing session state. When a query comes in, it's routed through AutoRAG (which uses Vectorize for vector storage and Workers AI for embeddings) to perform semantic search across feedback data stored in R2, then Workers AI's Llama 3.1 model generates summaries with extracted themes and insights before returning the response to the client.
 
 ## Live Demo
 
