@@ -1,0 +1,25 @@
+{
+  "name": "feedback-mcp",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "deploy": "astro build && wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
+    "@cloudflare/workers-types": "^4.20260118.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "agents": "^0.3.6",
+    "astro": "^5.16.11",
+    "jq": "^1.7.2",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.59.2",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9"
+  }
+}

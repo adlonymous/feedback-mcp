@@ -1,0 +1,632 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const mcpUrl = 'https://feedback-mcp.adlonymous.workers.dev/mcp';
+const playgroundUrl = 'https://playground.ai.cloudflare.com';
+---
+
+<Layout title="Feedback MCP Server - PM Build Challenge">
+  <main>
+    <div class="hero">
+      <div class="badge-row">
+        <div class="badge">MCP Server</div>
+        <div class="badge challenge">PM Build Challenge</div>
+      </div>
+      <h1>Feedback Investigation Server</h1>
+      <p class="subtitle">
+        An MCP server for product managers to search and summarize customer feedback 
+        from support tickets, Discord, and Twitter using AI-powered semantic search.
+      </p>
+    </div>
+
+    <section class="tools">
+      <h2>Available Tools</h2>
+      <div class="tool-grid">
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </svg>
+          </div>
+          <h3>search</h3>
+          <p>Search feedback items using semantic search powered by AutoRAG. Filter by source, status, urgency, or product.</p>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <h3>summarize</h3>
+          <p>Generate AI-powered summaries of feedback matching your query. Get actionable insights grouped by theme.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="connect">
+      <h2>Connect to this MCP Server</h2>
+      
+      <div class="url-box">
+        <label>MCP Server URL</label>
+        <div class="url-container">
+          <code id="mcp-url">{mcpUrl}</code>
+          <button id="copy-btn" class="copy-btn" title="Copy URL">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+              <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="instructions">
+        <h3>How to use with Cloudflare AI Playground</h3>
+        <ol>
+          <li>
+            <span class="step">1</span>
+            <div>
+              <strong>Open the Cloudflare AI Playground</strong>
+              <p>Go to <a href={playgroundUrl} target="_blank" rel="noopener noreferrer">{playgroundUrl}</a></p>
+            </div>
+          </li>
+          <li>
+            <span class="step">2</span>
+            <div>
+              <strong>Navigate to MCP Servers</strong>
+              <p>Click on the <strong>"MCP Servers"</strong> tab in the left sidebar</p>
+            </div>
+          </li>
+          <li>
+            <span class="step">3</span>
+            <div>
+              <strong>Add this MCP Server</strong>
+              <p>Click <strong>"Add MCP Server"</strong> and paste the URL above</p>
+            </div>
+          </li>
+          <li>
+            <span class="step">4</span>
+            <div>
+              <strong>Start asking questions</strong>
+              <p>Try queries like "What are people saying about R2?" or "Summarize P0 issues for Workers"</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <a href={playgroundUrl} target="_blank" rel="noopener noreferrer" class="cta-btn">
+        Open Cloudflare AI Playground
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </a>
+    </section>
+
+    <section class="data-info">
+      <h2>About the Data</h2>
+      <p>
+        This MCP server provides access to <strong>250 mock feedback items</strong> simulating 
+        real customer feedback for Cloudflare products including Workers, R2, Pages, D1, AI, 
+        Stream, Images, and Zero Trust.
+      </p>
+      <div class="data-stats">
+        <div class="stat">
+          <span class="stat-value">250</span>
+          <span class="stat-label">Feedback Items</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">3</span>
+          <span class="stat-label">Sources</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value">8</span>
+          <span class="stat-label">Products</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="architecture">
+      <h2>Architecture Overview</h2>
+      <p class="arch-intro">
+        This prototype uses <strong>4 Cloudflare Developer Platform products</strong> to create 
+        an AI-powered feedback analysis tool accessible via the Model Context Protocol (MCP).
+      </p>
+      
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="arch-icon workers"></div>
+          <h3>Workers + Durable Objects</h3>
+          <p>
+            Hosts the MCP server using the <code>agents</code> SDK. Durable Objects maintain 
+            session state for each MCP connection, enabling stateful interactions with clients.
+          </p>
+          <span class="arch-why">Why: Serverless compute with built-in session management for MCP protocol</span>
+        </div>
+        
+        <div class="arch-card">
+          <div class="arch-icon r2"></div>
+          <h3>R2</h3>
+          <p>
+            Stores the 250 mock feedback items as JSON. Provides fast, low-latency access to 
+            feedback data without egress fees.
+          </p>
+          <span class="arch-why">Why: Zero-egress object storage, perfect for serving structured data</span>
+        </div>
+        
+        <div class="arch-card">
+          <div class="arch-icon autorag"></div>
+          <h3>AutoRAG (AI Search)</h3>
+          <p>
+            Powers semantic search across feedback items. Automatically indexes content and 
+            enables natural language queries with query rewriting.
+          </p>
+          <span class="arch-why">Why: Built-in RAG without managing embeddings or vector DBs</span>
+        </div>
+        
+        <div class="arch-card">
+          <div class="arch-icon ai"></div>
+          <h3>Workers AI</h3>
+          <p>
+            Generates summaries of feedback using Llama 3.1. Extracts themes, urgency, and 
+            actionable insights from matched feedback items.
+          </p>
+          <span class="arch-why">Why: Serverless LLM inference integrated with Workers</span>
+        </div>
+      </div>
+
+      <div class="arch-flow">
+        <h3>Data Flow</h3>
+        <div class="flow-diagram">
+          <span class="flow-step">User Query</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">MCP Server (Workers)</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">AutoRAG Search</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">R2 Data</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">Workers AI Summary</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">Response</span>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Built for the Cloudflare PM Build Challenge</p>
+      <p class="tech-stack">Workers + Durable Objects, R2, AutoRAG, Workers AI, MCP SDK</p>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 2rem 0;
+  }
+
+  .badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge.challenge {
+    background: #f97316;
+  }
+
+  .hero h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+
+  .tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.25rem;
+  }
+
+  .tool-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--accent);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+  }
+
+  .tool-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+  }
+
+  .tool-card p {
+    font-size: 0.9rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+  }
+
+  .url-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .url-box label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted-foreground);
+    margin-bottom: 0.5rem;
+  }
+
+  .url-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .url-container code {
+    flex: 1;
+    font-size: 0.9rem;
+    word-break: break-all;
+  }
+
+  .copy-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted-foreground);
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.15s ease;
+  }
+
+  .copy-btn:hover {
+    color: var(--foreground);
+    background: var(--accent);
+  }
+
+  .copy-btn.copied {
+    color: #22c55e;
+  }
+
+  .instructions {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .instructions h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  .instructions ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .instructions li {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .instructions li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .instructions li:first-child {
+    padding-top: 0;
+  }
+
+  .step {
+    width: 28px;
+    height: 28px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .instructions li strong {
+    display: block;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .instructions li p {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin: 0;
+  }
+
+  .instructions li a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+
+  .instructions li a:hover {
+    text-decoration: underline;
+  }
+
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+
+  .cta-btn:hover {
+    opacity: 0.9;
+  }
+
+  .data-info {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .data-info p {
+    font-size: 0.95rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+  }
+
+  .data-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--muted-foreground);
+  }
+
+  footer {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--muted-foreground);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border);
+  }
+
+  footer .tech-stack {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+    opacity: 0.7;
+  }
+
+  /* Architecture Section */
+  .architecture {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .arch-intro {
+    font-size: 0.95rem;
+    color: var(--muted-foreground);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .arch-card {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .arch-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 0.375rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .arch-icon.workers {
+    background: linear-gradient(135deg, #f6821f, #faad3f);
+  }
+
+  .arch-icon.r2 {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  }
+
+  .arch-icon.autorag {
+    background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  }
+
+  .arch-icon.ai {
+    background: linear-gradient(135deg, #ec4899, #f43f5e);
+  }
+
+  .arch-card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .arch-card p {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+
+  .arch-card code {
+    background: var(--accent);
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+  }
+
+  .arch-why {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-style: italic;
+  }
+
+  .arch-flow {
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .arch-flow h3 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--muted-foreground);
+  }
+
+  .flow-diagram {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .flow-step {
+    background: var(--accent);
+    padding: 0.375rem 0.625rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+  }
+
+  .flow-arrow {
+    color: var(--muted-foreground);
+    font-family: monospace;
+  }
+</style>
+
+<script>
+  const copyBtn = document.getElementById('copy-btn');
+  const mcpUrl = document.getElementById('mcp-url');
+
+  copyBtn?.addEventListener('click', async () => {
+    const url = mcpUrl?.textContent || '';
+    await navigator.clipboard.writeText(url);
+    copyBtn.classList.add('copied');
+    copyBtn.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    `;
+    setTimeout(() => {
+      copyBtn.classList.remove('copied');
+      copyBtn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
+          <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>
+        </svg>
+      `;
+    }, 2000);
+  });
+</script>

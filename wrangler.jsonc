@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "feedback-mcp",
+  "main": "dist/_worker.js/index.js",
+  "compatibility_date": "2025-01-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "dist",
+    "binding": "ASSETS"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MCP_OBJECT",
+        "class_name": "FeedbackMCP"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["FeedbackMCP"]
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "r2_buckets": [
+    {
+      "binding": "FEEDBACK_BUCKET",
+      "bucket_name": "feedback-mcp-data"
+    }
+  ]
+}
