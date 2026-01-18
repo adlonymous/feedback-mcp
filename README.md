@@ -76,7 +76,7 @@ This project uses **5 Cloudflare Developer Platform products**:
 
 | Product | Purpose |
 |---------|---------|
-| **Workers + Durable Objects** | Hosts the MCP server using the `agents` SDK. Durable Objects maintain session state for each MCP connection. |
+| **Workers + Durable Objects** | Hosts the MCP server using the [Cloudflare Agents SDK](https://github.com/cloudflare/agents). The `McpAgent` class handles MCP protocol via Streamable HTTP, with Durable Objects maintaining session state for each connection. |
 | **R2** | Stores 250 mock feedback items as JSON. Zero-egress object storage for serving structured data. Also used by AutoRAG as the source for indexing. |
 | **AutoRAG (AI Search)** | Managed RAG pipeline that powers semantic search. Handles document chunking, embedding generation, and vector search automatically. |
 | **Vectorize** | Vector database used by AutoRAG behind the scenes to store and query embeddings for semantic similarity search. |
@@ -158,9 +158,10 @@ The `wrangler.jsonc` configures:
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/)
 - [Cloudflare R2](https://developers.cloudflare.com/r2/)
 - [Cloudflare AutoRAG](https://developers.cloudflare.com/autorag/)
+- [Cloudflare Vectorize](https://developers.cloudflare.com/vectorize/)
 - [Cloudflare Workers AI](https://developers.cloudflare.com/workers-ai/)
+- [Cloudflare Agents SDK](https://github.com/cloudflare/agents) - Powers the MCP server with `McpAgent` class and Durable Objects integration
 - [MCP SDK](https://modelcontextprotocol.io/)
-- [Agents SDK](https://github.com/cloudflare/agents)
 - [Astro](https://astro.build/)
 
 ## License
