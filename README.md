@@ -21,42 +21,43 @@ An MCP (Model Context Protocol) server that helps product managers aggregate and
 
 ## Architecture
 
-This project uses **4 Cloudflare Developer Platform products**:
+This project uses **5 Cloudflare Developer Platform products**:
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           CLOUDFLARE EDGE NETWORK                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  ┌──────────────┐      ┌─────────────────────────────────────────────────────┐  │
-│  │              │      │              WORKERS + DURABLE OBJECTS              │  │
-│  │   MCP        │      │  ┌─────────────────────────────────────────────┐    │  │
-│  │   Client     │◄────►│  │           FeedbackMCP Agent                 │    │  │
-│  │              │      │  │  • Handles MCP protocol (Streamable HTTP)   │    │  │
-│  │  (Playground │      │  │  • Session state management                 │    │  │
-│  │   or Claude) │      │  │  • Tool routing (search/summarize)          │    │  │
-│  │              │      │  └─────────────────────────────────────────────┘    │  │
-│  └──────────────┘      └─────────────────────────────────────────────────────┘  │
-│                                         │                                       │
-│                                         ▼                                       │
-│         ┌───────────────────────────────┴───────────────────────────────┐       │
-│         │                                                               │       │
-│         ▼                                                               ▼       │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────────────┐  │
-│  │                 │    │                 │    │                             │  │
-│  │    AUTORAG      │    │       R2        │    │       WORKERS AI            │  │
-│  │   (AI Search)   │    │                 │    │                             │  │
-│  │                 │    │  ┌───────────┐  │    │  ┌─────────────────────┐    │  │
-│  │ • Semantic      │───►│  │ feedback  │  │───►│  │  Llama 3.1 8B       │    │  │
-│  │   search        │    │  │  .json    │  │    │  │                     │    │  │
-│  │ • Query         │    │  │           │  │    │  │  • Summarization    │    │  │
-│  │   rewriting     │    │  │ 250 items │  │    │  │  • Theme extraction │    │  │
-│  │ • Vector        │    │  └───────────┘  │    │  │  • Insights         │    │  │
-│  │   indexing      │    │                 │    │  └─────────────────────┘    │  │
-│  │                 │    │                 │    │                             │  │
-│  └─────────────────┘    └─────────────────┘    └─────────────────────────────┘  │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                             CLOUDFLARE EDGE NETWORK                                  │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                      │
+│  ┌──────────────┐       ┌──────────────────────────────────────────────────────┐     │
+│  │              │       │              WORKERS + DURABLE OBJECTS               │     │
+│  │   MCP        │       │  ┌──────────────────────────────────────────────┐    │     │
+│  │   Client     │◄─────►│  │           FeedbackMCP Agent                  │    │     │
+│  │              │       │  │  • Handles MCP protocol (Streamable HTTP)    │    │     │
+│  │  (Playground │       │  │  • Session state management                  │    │     │
+│  │   or Claude) │       │  │  • Tool routing (search/summarize)           │    │     │
+│  │              │       │  └──────────────────────────────────────────────┘    │     │
+│  └──────────────┘       └──────────────────────────────────────────────────────┘     │
+│                                          │                                           │
+│                    ┌─────────────────────┼─────────────────────┐                     │
+│                    │                     │                     │                     │
+│                    ▼                     ▼                     ▼                     │
+│  ┌────────────────────────────┐   ┌───────────┐   ┌─────────────────────────────┐   │
+│  │         AUTORAG            │   │           │   │        WORKERS AI           │   │
+│  │       (AI Search)          │   │    R2     │   │                             │   │
+│  │                            │   │           │   │  ┌───────────────────────┐  │   │
+│  │  ┌──────────────────────┐  │   │ feedback  │   │  │ bge-base-en-v1.5      │  │   │
+│  │  │      VECTORIZE       │  │   │  .json    │   │  │ (embeddings)          │  │   │
+│  │  │                      │  │   │           │   │  └───────────────────────┘  │   │
+│  │  │  • Vector storage    │◄─┼───│ 250 items │   │  ┌───────────────────────┐  │   │
+│  │  │  • Similarity search │  │   │           │   │  │ Llama 3.1 8B          │  │   │
+│  │  │  • HNSW indexing     │  │   │ (source)  │   │  │ (summarization)       │  │   │
+│  │  └──────────────────────┘  │   │           │   │  └───────────────────────┘  │   │
+│  │                            │   │           │   │                             │   │
+│  │  • Query rewriting         │   └───────────┘   └─────────────────────────────┘   │
+│  │  • Managed RAG pipeline    │                                                     │
+│  └────────────────────────────┘                                                     │
+│                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Data Flow
@@ -76,9 +77,10 @@ This project uses **4 Cloudflare Developer Platform products**:
 | Product | Purpose |
 |---------|---------|
 | **Workers + Durable Objects** | Hosts the MCP server using the `agents` SDK. Durable Objects maintain session state for each MCP connection. |
-| **R2** | Stores 250 mock feedback items as JSON. Zero-egress object storage for serving structured data. |
-| **AutoRAG (AI Search)** | Powers semantic search across feedback. Automatically indexes content and enables natural language queries with query rewriting. |
-| **Workers AI** | Generates summaries using Llama 3.1. Extracts themes, urgency, and actionable insights from matched feedback. |
+| **R2** | Stores 250 mock feedback items as JSON. Zero-egress object storage for serving structured data. Also used by AutoRAG as the source for indexing. |
+| **AutoRAG (AI Search)** | Managed RAG pipeline that powers semantic search. Handles document chunking, embedding generation, and vector search automatically. |
+| **Vectorize** | Vector database used by AutoRAG behind the scenes to store and query embeddings for semantic similarity search. |
+| **Workers AI** | Powers both embedding generation (via AutoRAG using `bge-base-en-v1.5`) and summarization (Llama 3.1 8B for extracting themes and insights). |
 
 ## MCP Tools
 

@@ -133,7 +133,7 @@ const playgroundUrl = 'https://playground.ai.cloudflare.com';
     <section class="architecture">
       <h2>Architecture Overview</h2>
       <p class="arch-intro">
-        This prototype uses <strong>4 Cloudflare Developer Platform products</strong> to create 
+        This prototype uses <strong>5 Cloudflare Developer Platform products</strong> to create 
         an AI-powered feedback analysis tool accessible via the Model Context Protocol (MCP).
       </p>
       
@@ -152,30 +152,40 @@ const playgroundUrl = 'https://playground.ai.cloudflare.com';
           <div class="arch-icon r2"></div>
           <h3>R2</h3>
           <p>
-            Stores the 250 mock feedback items as JSON. Provides fast, low-latency access to 
-            feedback data without egress fees.
+            Stores the 250 mock feedback items as JSON. Also serves as the source for AutoRAG 
+            indexing. Zero-egress object storage.
           </p>
-          <span class="arch-why">Why: Zero-egress object storage, perfect for serving structured data</span>
+          <span class="arch-why">Why: Zero-egress storage for both serving data and RAG source documents</span>
         </div>
         
         <div class="arch-card">
           <div class="arch-icon autorag"></div>
           <h3>AutoRAG (AI Search)</h3>
           <p>
-            Powers semantic search across feedback items. Automatically indexes content and 
-            enables natural language queries with query rewriting.
+            Managed RAG pipeline that handles document chunking, embedding generation, and 
+            semantic search. Uses Vectorize under the hood.
           </p>
-          <span class="arch-why">Why: Built-in RAG without managing embeddings or vector DBs</span>
+          <span class="arch-why">Why: Fully managed RAG without configuring embeddings or vector DBs</span>
+        </div>
+
+        <div class="arch-card">
+          <div class="arch-icon vectorize"></div>
+          <h3>Vectorize</h3>
+          <p>
+            Vector database used by AutoRAG to store embeddings and perform similarity search 
+            using HNSW indexing for fast retrieval.
+          </p>
+          <span class="arch-why">Why: Powers the semantic search behind AutoRAG's natural language queries</span>
         </div>
         
         <div class="arch-card">
           <div class="arch-icon ai"></div>
           <h3>Workers AI</h3>
           <p>
-            Generates summaries of feedback using Llama 3.1. Extracts themes, urgency, and 
-            actionable insights from matched feedback items.
+            Powers both embedding generation (<code>bge-base-en-v1.5</code> via AutoRAG) and 
+            summarization (<code>Llama 3.1 8B</code> for insights).
           </p>
-          <span class="arch-why">Why: Serverless LLM inference integrated with Workers</span>
+          <span class="arch-why">Why: Serverless inference for both embeddings and LLM summarization</span>
         </div>
       </div>
 
@@ -184,13 +194,15 @@ const playgroundUrl = 'https://playground.ai.cloudflare.com';
         <div class="flow-diagram">
           <span class="flow-step">User Query</span>
           <span class="flow-arrow">-></span>
-          <span class="flow-step">MCP Server (Workers)</span>
+          <span class="flow-step">MCP Server</span>
           <span class="flow-arrow">-></span>
-          <span class="flow-step">AutoRAG Search</span>
+          <span class="flow-step">AutoRAG</span>
           <span class="flow-arrow">-></span>
-          <span class="flow-step">R2 Data</span>
+          <span class="flow-step">Vectorize</span>
           <span class="flow-arrow">-></span>
-          <span class="flow-step">Workers AI Summary</span>
+          <span class="flow-step">R2</span>
+          <span class="flow-arrow">-></span>
+          <span class="flow-step">Workers AI</span>
           <span class="flow-arrow">-></span>
           <span class="flow-step">Response</span>
         </div>
@@ -199,7 +211,7 @@ const playgroundUrl = 'https://playground.ai.cloudflare.com';
 
     <footer>
       <p>Built for the Cloudflare PM Build Challenge</p>
-      <p class="tech-stack">Workers + Durable Objects, R2, AutoRAG, Workers AI, MCP SDK</p>
+      <p class="tech-stack">Workers + Durable Objects, R2, AutoRAG, Vectorize, Workers AI, MCP SDK</p>
     </footer>
   </main>
 </Layout>
@@ -538,6 +550,10 @@ const playgroundUrl = 'https://playground.ai.cloudflare.com';
 
   .arch-icon.autorag {
     background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+  }
+
+  .arch-icon.vectorize {
+    background: linear-gradient(135deg, #10b981, #059669);
   }
 
   .arch-icon.ai {
